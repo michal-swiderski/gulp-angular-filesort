@@ -1,14 +1,15 @@
 'use strict';
 
 var through = require('through2');
-var ngDep = require('ng-dependencies');
 var toposort = require('toposort');
 var PluginError = require('plugin-error');
+
+var ngDep = require('./ng-dependencies');
 
 var PLUGIN_NAME = 'gulp-angular-filesort';
 var ANGULAR_MODULE = 'ng';
 
-module.exports = function angularFilesort() {
+module.exports = function angularFilesort(parserOptions) {
   var files = [];
   var ngModules = {};
   var toSort = [];
@@ -31,7 +32,7 @@ module.exports = function angularFilesort() {
 
     var deps;
     try {
-      deps = ngDep(file.contents);
+      deps = ngDep(file.contents, parserOptions);
     } catch (err) {
       this.emit('error', new PluginError(PLUGIN_NAME, 'Error in parsing: "' + file.relative + '", ' + err.message));
       return;
